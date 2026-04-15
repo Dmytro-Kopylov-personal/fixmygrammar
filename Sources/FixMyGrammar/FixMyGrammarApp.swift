@@ -16,9 +16,11 @@ struct FixMyGrammarApp: App {
                 .environmentObject(appModel)
         }
 
-        MenuBarExtra("FixMyGrammar", systemImage: "text.badge.checkmark") {
+        MenuBarExtra {
             MenuBarContent()
                 .environmentObject(appModel)
+        } label: {
+            MenuBarExtraLabel(isChecking: appModel.isChecking)
         }
     }
 }

@@ -28,7 +28,7 @@ final class AppModel: ObservableObject {
             if newValue {
                 captureOrder = .selectionOnly
             } else if captureOrder == .selectionOnly {
-                captureOrder = .selectionThenClipboard
+                captureOrder = .clipboardThenSelection
             }
         }
     }
@@ -84,7 +84,8 @@ final class AppModel: ObservableObject {
         if let raw = defaults.string(forKey: Keys.captureOrder), let order = TextCaptureOrder(rawValue: raw) {
             captureOrder = order
         } else {
-            captureOrder = .selectionThenClipboard
+            // Selection via AX is unreliable in many apps; clipboard-only matches the usual ⌘C workflow.
+            captureOrder = .clipboardOnly
         }
 
         if defaults.object(forKey: Keys.bringResultsToFront) == nil {
@@ -154,7 +155,7 @@ final class AppModel: ObservableObject {
 
         let trimmedModel = model.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedModel.isEmpty else {
-            failCheck("Set the LM Studio model id in Settings (the loaded model name).")
+            failCheck("Set the LM Studio model id in Settings (the loaded model name).", bringToFront: true)
             return
         }
 
@@ -162,7 +163,8 @@ final class AppModel: ObservableObject {
         guard let text = capture.text?.trimmingCharacters(in: .whitespacesAndNewlines),
               !text.isEmpty
         else {
-            failCheck(capture.diagnostics ?? "No text was captured. Check Settings → Capture and try again.")
+            // Do not activate our app here: stealing focus breaks the next selection/AX read in your editor.
+            failCheck(capture.diagnostics ?? "No text was captured. Check Settings → Capture and try again.", bringToFront: false)
             return
         }
 
@@ -172,7 +174,8 @@ final class AppModel: ObservableObject {
                 Captured text is identical to your model id (“\(trimmedModel)”). That value belongs only in Settings → Model id, not in the clipboard or selection.
 
                 Copy or select the real sentence or paragraph you want checked, then run the check again. If you use the clipboard, copy your draft after you finish pasting the model name.
-                """
+                """,
+                bringToFront: false
             )
             return
         }
@@ -209,8 +212,10 @@ final class AppModel: ObservableObject {
                 truncationNote: note
             )
             surfaceCheckUIIfNeeded()
+            AppActivation.requestDockAttentionIfInactive()
         } catch {
-            failCheck(error.localizedDescription)
+            failCheck(error.localizedDescription, bringToFront: true)
+            AppActivation.requestDockAttentionIfInactive()
         }
     }
 
@@ -218,9 +223,11 @@ final class AppModel: ObservableObject {
         Swift.min(Swift.max(value, min), max)
     }
 
-    private func failCheck(_ message: String) {
+    private func failCheck(_ message: String, bringToFront: Bool = true) {
         lastError = message
-        surfaceCheckUIIfNeeded()
+        if bringToFront {
+            surfaceCheckUIIfNeeded()
+        }
     }
 
     private func surfaceCheckUIIfNeeded() {

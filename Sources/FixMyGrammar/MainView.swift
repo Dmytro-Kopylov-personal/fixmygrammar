@@ -9,8 +9,30 @@ struct MainView: View {
             Text("FixMyGrammar")
                 .font(.title2.weight(.semibold))
 
+            if appModel.isChecking {
+                HStack(spacing: 12) {
+                    ProgressView()
+                        .controlSize(.regular)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Working on your request")
+                            .font(.subheadline.weight(.semibold))
+                        Text("Waiting for LM Studio…")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(.blue.opacity(0.12), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .strokeBorder(.blue.opacity(0.22), lineWidth: 1)
+                )
+            }
+
             VStack(alignment: .leading, spacing: 6) {
-                Text("Select or copy the passage you want checked (not the model id). Then press your shortcut or use Check now.")
+                Text("Copy the passage with ⌘C (not the model id), then press your shortcut or Check now. Accessibility selection works in some native editors only—in browsers and Slack, use the clipboard.")
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Text("Current shortcut:")
                     Text(appModel.hotkeyCombo.description)

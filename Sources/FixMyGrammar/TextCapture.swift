@@ -190,7 +190,9 @@ enum TextCapture {
                     """
                     No readable text selection was found in the focused app.
 
-                    Highlight text in your editor, then run the check again while that app is focused (before FixMyGrammar’s window steals focus). Some apps (parts of Chrome, Slack, Electron) expose little or no selection to Accessibility—in that case turn off “Check only selected text” and use “Clipboard only”, then copy your text before checking.
+                    Highlight text in your editor, then run the check again while that app stays focused. If “Bring FixMyGrammar to the front when results or errors appear” is on, an error can still move focus here—turn it off while debugging capture, or use Clipboard first / Clipboard only and copy your text (⌘C) before checking.
+
+                    Some apps (parts of Chrome, Slack, Electron) expose little or no selection to Accessibility—in that case turn off “Check only selected text” and use “Clipboard only”, then copy your text before checking.
                     """
                 )
             }

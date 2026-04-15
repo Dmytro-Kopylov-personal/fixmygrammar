@@ -73,7 +73,7 @@ struct SettingsView: View {
 
             Section("Results") {
                 Toggle("Bring FixMyGrammar to the front when results or errors appear", isOn: $appModel.bringResultsToFront)
-                Text("Useful after a global shortcut while you are still in another app.")
+                Text("Helpful when a check succeeds. For “no text captured” errors we no longer steal focus, so you can stay in your editor. Other errors may still bring the app forward when this is on.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Toggle("Show full report (issues list, raw output, copy full report)", isOn: $appModel.showFullReportInResults)

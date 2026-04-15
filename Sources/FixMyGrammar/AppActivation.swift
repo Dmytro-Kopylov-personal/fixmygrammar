@@ -17,4 +17,10 @@ enum AppActivation {
             }
         }
     }
+
+    /// When a check finishes while another app is focused, gently bounce the Dock icon (no modal).
+    static func requestDockAttentionIfInactive() {
+        guard !NSApp.isActive else { return }
+        NSApp.requestUserAttention(.informationalRequest)
+    }
 }
