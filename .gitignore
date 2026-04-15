@@ -1,3 +1,6 @@
 .build/
 dist/
 .DS_Store
+
+# Local MCP secrets (copy from .cursor/*.example.json and use ~/.cursor/mcp.json or merge here)
+.cursor/mcp.json
