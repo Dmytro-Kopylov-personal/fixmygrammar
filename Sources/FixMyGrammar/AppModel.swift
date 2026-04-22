@@ -72,7 +72,17 @@ final class AppModel: ObservableObject {
 
     @Published var isChecking = false
     @Published var lastError: String?
-    @Published var activeResult: GrammarRunResult?
+
+    /// When set, the results overlay is shown. Updated from the model so it works even if the main `WindowGroup` is closed (menu bar + hotkey only).
+    @Published var activeResult: GrammarRunResult? {
+        didSet {
+            if let r = activeResult {
+                ResultsOverlayController.shared.show(result: r, appModel: self)
+            } else {
+                ResultsOverlayController.shared.hide()
+            }
+        }
+    }
 
     private let hotkeyService = GlobalHotkeyService()
 

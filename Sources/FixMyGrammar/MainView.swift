@@ -80,12 +80,5 @@ struct MainView: View {
             NSApp.setActivationPolicy(.regular)
             NSApp.activate(ignoringOtherApps: true)
         }
-        .sheet(item: Binding(
-            get: { appModel.activeResult },
-            set: { appModel.activeResult = $0 }
-        )) { result in
-            ResultsSheet(result: result)
-                .environmentObject(appModel)
-        }
     }
 }

@@ -3,8 +3,8 @@ import SwiftUI
 
 struct ResultsSheet: View {
     let result: GrammarRunResult
+    var onDismiss: () -> Void
     @EnvironmentObject private var appModel: AppModel
-    @Environment(\.dismiss) private var dismiss
 
     private var showFullReport: Bool { appModel.showFullReportInResults }
 
@@ -25,7 +25,7 @@ struct ResultsSheet: View {
                 Text("Grammar check")
                     .font(.title3.weight(.semibold))
                 Spacer()
-                Button("Done") { dismiss() }
+                Button("Done", action: onDismiss)
                     .keyboardShortcut(.defaultAction)
             }
             .padding()
@@ -56,6 +56,8 @@ struct ResultsSheet: View {
                 }
                 .padding()
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .clipped()
 
             Divider()
 
@@ -64,6 +66,7 @@ struct ResultsSheet: View {
                     let text = result.parsed?.correctedText ?? result.rawResponse
                     NSPasteboard.general.clearContents()
                     NSPasteboard.general.setString(text, forType: .string)
+                    onDismiss()
                 }
                 .disabled(result.parsed == nil && result.rawResponse.isEmpty)
 
@@ -85,6 +88,7 @@ struct ResultsSheet: View {
                         let blob = lines.joined(separator: "\n")
                         NSPasteboard.general.clearContents()
                         NSPasteboard.general.setString(blob, forType: .string)
+                        onDismiss()
                     }
                 }
 
@@ -92,7 +96,7 @@ struct ResultsSheet: View {
             }
             .padding()
         }
-        .frame(minWidth: 520, minHeight: 480)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var textPanel: some View {
