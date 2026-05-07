@@ -2,7 +2,7 @@ import Foundation
 
 /// Release version: keep in sync with `Packaging/Info.plist` (`CFBundleShortVersionString`).
 enum AppMetadata {
-    static let fallbackMarketingVersion = "1.0.0"
+    static let fallbackMarketingVersion = "1.0.1"
 
     /// When running from `FixMyGrammar.app`, reads the bundle; otherwise falls back (e.g. `swift run`).
     static var marketingVersion: String {

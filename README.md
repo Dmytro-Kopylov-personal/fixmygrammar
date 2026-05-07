@@ -6,6 +6,8 @@
 
 **FixMyGrammar** is a small **macOS menu-bar app** that sends text to [**LM Studio**](https://lmstudio.ai/) (or any **OpenAI-compatible** local server), then shows **grammar / style** suggestions in a compact overlay. Everything stays on your machine by default (your configured URL — typically `http://127.0.0.1:1234`).
 
+Tested on **Apple Silicon** (arm64) with LM Studio; Intel Macs should work if the toolchain and LM Studio run there.
+
 There is **no Dock icon**; the app runs like a lightweight utility next to the clock (similar to many agent-style apps).
 
 ---
@@ -65,6 +67,12 @@ swift build -c release
 
 ---
 
+## Screenshots
+
+You can drop images under **[`docs/images/`](docs/images/README.md)** and embed them here for a richer README (menu bar, results overlay, Settings).
+
+---
+
 ## Development
 
 ```bash
@@ -100,7 +108,11 @@ Architecture overview: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
 
 ## License
 
-[MIT License](LICENSE). See [CHANGELOG.md](CHANGELOG.md) for release notes.
+[MIT License](LICENSE). See [CHANGELOG.md](CHANGELOG.md) for release notes. Third-party notices: **[NOTICE](NOTICE)** (includes [HotKey](https://github.com/soffes/HotKey)).
+
+## Maintainers
+
+Before changing repo visibility or cutting a release, run **`./scripts/pre_public_audit.sh`** and follow **[docs/GITHUB_REPOSITORY_SETTINGS.md](docs/GITHUB_REPOSITORY_SETTINGS.md)** (Dependabot, security reporting, branch protection).
 
 ## Contributing & conduct
 

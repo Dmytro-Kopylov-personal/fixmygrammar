@@ -56,9 +56,11 @@ Then grant **Accessibility** if you use selection-based capture (see README).
 
 When cutting a release, align:
 
-1. `CHANGELOG.md` — move items from `[Unreleased]` into a dated section.
-2. `Packaging/Info.plist` — `CFBundleShortVersionString` / `CFBundleVersion`.
-3. `Sources/FixMyGrammar/AppMetadata.swift` — `fallbackMarketingVersion` (used when not running from a bundle).
+1. Run **`./scripts/pre_public_audit.sh`** (no committed secrets or `dist/` / `.build/`).
+2. `CHANGELOG.md` — move items from `[Unreleased]` into a dated section.
+3. `Packaging/Info.plist` — `CFBundleShortVersionString` / `CFBundleVersion`.
+4. `Sources/FixMyGrammar/AppMetadata.swift` — `fallbackMarketingVersion` (used when not running from a bundle).
+5. Public repo checklist: **[docs/GITHUB_REPOSITORY_SETTINGS.md](docs/GITHUB_REPOSITORY_SETTINGS.md)**.
 
 ## License
 
