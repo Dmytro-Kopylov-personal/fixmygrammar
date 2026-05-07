@@ -6,15 +6,25 @@ let package = Package(
     platforms: [.macOS(.v14)],
     products: [
         .executable(name: "FixMyGrammar", targets: ["FixMyGrammar"]),
+        .library(name: "FixMyGrammarCore", targets: ["FixMyGrammarCore"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/soffes/HotKey", from: "0.2.0"),
+        .package(url: "https://github.com/soffes/HotKey", exact: "0.2.0"),
     ],
     targets: [
+        .target(
+            name: "FixMyGrammarCore",
+            path: "Sources/FixMyGrammarCore"
+        ),
         .executableTarget(
             name: "FixMyGrammar",
-            dependencies: ["HotKey"],
+            dependencies: ["FixMyGrammarCore", "HotKey"],
             path: "Sources/FixMyGrammar"
+        ),
+        .testTarget(
+            name: "FixMyGrammarTests",
+            dependencies: ["FixMyGrammarCore"],
+            path: "Tests/FixMyGrammarTests"
         ),
     ]
 )

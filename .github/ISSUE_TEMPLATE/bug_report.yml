@@ -1,0 +1,65 @@
+name: Bug report
+description: Report a problem running FixMyGrammar
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please fill in what you can; logs or screenshots help.
+
+  - type: input
+    id: version
+    attributes:
+      label: FixMyGrammar version (or git commit)
+      placeholder: e.g. 1.0.0 / abc1234
+    validations:
+      required: true
+
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      placeholder: e.g. 14.6
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: What did you do before the bug happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: false
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened instead
+    validations:
+      required: true
+
+  - type: textarea
+    id: lmstudio
+    attributes:
+      label: LM Studio (or server) context
+      description: e.g. LM Studio version, model id (redact private paths if needed). Local URL port if not default.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: capture
+    attributes:
+      label: Capture mode
+      options:
+        - Clipboard / mixed
+        - Accessibility selection only
+        - Not sure
+    validations:
+      required: true

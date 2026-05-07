@@ -10,23 +10,23 @@ struct ResultsSpotlightContainer: View {
     var body: some View {
         ZStack {
             // Scrim: Raycast/Spotlight-style dim. Tap to dismiss.
-            Color.black.opacity(0.42)
+            Color.black.opacity(0.38)
                 .ignoresSafeArea()
                 .contentShape(Rectangle())
                 .onTapGesture(perform: dismiss)
 
-            // Centered card with a short spring — feels “like Spotlight” without going full-screen chrome.
+            // Centered card, sized to content (capped inside ResultsSheet for long text).
             VStack {
-                Spacer(minLength: 32)
+                Spacer(minLength: 20)
                 ResultsSheet(result: result, onDismiss: dismiss)
                     .environmentObject(appModel)
                     .frame(
-                        minWidth: 480,
-                        maxWidth: 720
+                        minWidth: 280,
+                        idealWidth: 360,
+                        maxWidth: min(440, (NSScreen.main?.visibleFrame.width ?? 1000) - 48)
                     )
                     .frame(
-                        minHeight: 360,
-                        maxHeight: min(900, (NSScreen.main?.visibleFrame.height ?? 800) * 0.86)
+                        maxHeight: min(640, (NSScreen.main?.visibleFrame.height ?? 800) * 0.78)
                     )
                     .background(
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
@@ -37,7 +37,7 @@ struct ResultsSpotlightContainer: View {
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
                             .strokeBorder(.quaternary.opacity(0.9), lineWidth: 0.5)
                     )
-                    .shadow(color: .black.opacity(0.45), radius: 48, y: 20)
+                    .shadow(color: .black.opacity(0.35), radius: 22, y: 12)
                     .scaleEffect(cardReady ? 1 : 0.92)
                     .opacity(cardReady ? 1 : 0)
                     .offset(y: cardReady ? 0 : 10)

@@ -1,19 +1,30 @@
 import Foundation
 
 /// JSON contract between the app and the local LLM (grammar/style review).
-struct GrammarReviewPayload: Codable, Equatable {
-    let correctedText: String
-    let issues: [GrammarIssue]
+public struct GrammarReviewPayload: Codable, Equatable, Sendable {
+    public let correctedText: String
+    public let issues: [GrammarIssue]
 
-    struct GrammarIssue: Codable, Equatable {
-        let title: String
-        let detail: String
-        let severity: String?
+    public struct GrammarIssue: Codable, Equatable, Sendable {
+        public let title: String
+        public let detail: String
+        public let severity: String?
+
+        public init(title: String, detail: String, severity: String?) {
+            self.title = title
+            self.detail = detail
+            self.severity = severity
+        }
+    }
+
+    public init(correctedText: String, issues: [GrammarIssue]) {
+        self.correctedText = correctedText
+        self.issues = issues
     }
 }
 
-enum GrammarJSONParser {
-    static func parse(from raw: String) throws -> GrammarReviewPayload {
+public enum GrammarJSONParser: Sendable {
+    public static func parse(from raw: String) throws -> GrammarReviewPayload {
         let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         let stripped = stripMarkdownCodeFence(from: trimmed)
         guard let data = stripped.data(using: .utf8) else {
@@ -42,11 +53,11 @@ enum GrammarJSONParser {
     }
 }
 
-enum GrammarParseError: LocalizedError {
+public enum GrammarParseError: LocalizedError, Sendable {
     case notUTF8
     case invalidJSON(underlying: String, snippet: String)
 
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .notUTF8:
             return "The model response could not be read as UTF-8 text."
@@ -56,8 +67,8 @@ enum GrammarParseError: LocalizedError {
     }
 }
 
-enum GrammarPrompt {
-    static let systemMessage = """
+public enum GrammarPrompt: Sendable {
+    public static let systemMessage = """
     You are a copy editor. The user message is the text to fix for grammar, spelling, punctuation, and clear, natural style in the same language.
     Output one JSON object only. No markdown, no code fences, no text before or after the JSON, no chain-of-thought, no explanation outside JSON.
     Schema:

@@ -5,12 +5,7 @@ struct FixMyGrammarApp: App {
     @NSApplicationDelegateAdaptor(FixMyGrammarAppDelegate.self) private var appDelegate
     @StateObject private var appModel = AppModel()
 
-    var body: some Scene {
-        WindowGroup {
-            MainView()
-                .environmentObject(appModel)
-        }
-
+      var body: some Scene {
         Settings {
             SettingsView()
                 .environmentObject(appModel)

@@ -1,4 +1,5 @@
 import AppKit
+import FixMyGrammarCore
 import Foundation
 import HotKey
 import SwiftUI
@@ -214,6 +215,8 @@ final class AppModel: ObservableObject {
             let note: String? = truncated.wasTruncated
                 ? "Input was shortened to fit about \(effectiveContext) tokens of context (approximate UTF-8 budget). Sent \(truncated.text.utf8.count) of \(truncated.originalUTF8Count) UTF-8 bytes from the start of your capture."
                 : nil
+            // Hide the progress overlay before presenting results (both use floating windows).
+            isChecking = false
             activeResult = GrammarRunResult(
                 sourceText: truncated.text,
                 rawResponse: raw,
@@ -236,7 +239,7 @@ final class AppModel: ObservableObject {
     private func failCheck(_ message: String, bringToFront: Bool = true) {
         lastError = message
         if bringToFront {
-            surfaceCheckUIIfNeeded()
+            ErrorPresenter.showBlocking(message: message)
         }
     }
 

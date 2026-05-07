@@ -1,3 +1,4 @@
+import FixMyGrammarCore
 import Foundation
 
 struct LMStudioClient: Sendable {

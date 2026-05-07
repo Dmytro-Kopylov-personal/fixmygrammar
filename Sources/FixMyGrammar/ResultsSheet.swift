@@ -19,45 +19,39 @@ struct ResultsSheet: View {
         showFullReport && (hasIssues || isUnparsed)
     }
 
+    /// When content is long, the scroll region stops here so the card stays compact; short text doesn’t get a big empty area.
+    private var maxScrollableBodyHeight: CGFloat {
+        min(320, (NSScreen.main?.visibleFrame.height ?? 800) * 0.42)
+    }
+
+    /// Finishes the vertical size proposal so `ViewThatFits` can fall back to scrolling instead of a tall stack.
+    private var maxMiddleSectionHeight: CGFloat {
+        min(420, (NSScreen.main?.visibleFrame.height ?? 800) * 0.55)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text("Grammar check")
-                    .font(.title3.weight(.semibold))
+                    .font(.headline.weight(.semibold))
                 Spacer()
                 Button("Done", action: onDismiss)
                     .keyboardShortcut(.defaultAction)
             }
-            .padding()
+            .padding(12)
 
             Divider()
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    if result.inputWasTruncated, let note = result.truncationNote {
-                        Text(note)
-                            .font(.callout)
-                            .foregroundStyle(.primary)
-                            .padding(12)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(.yellow.opacity(0.25), in: RoundedRectangle(cornerRadius: 8))
-                    }
-
-                    textPanel
-
-                    if showReportCard {
-                        reportPanel
-                    } else if isUnparsed && !showFullReport {
-                        Text("The model did not return valid JSON. Turn on “Show full report” in Settings to inspect the raw response.")
-                            .font(.callout)
-                            .foregroundStyle(.secondary)
-                            .padding(.vertical, 4)
-                    }
+            ViewThatFits(in: .vertical) {
+                mainBody
+                    .padding(12)
+                ScrollView {
+                    mainBody
+                        .padding(12)
                 }
-                .padding()
+                .frame(maxHeight: maxScrollableBodyHeight)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .clipped()
+            .frame(maxWidth: .infinity, maxHeight: maxMiddleSectionHeight, alignment: .top)
 
             Divider()
 
@@ -94,9 +88,34 @@ struct ResultsSheet: View {
 
                 Spacer()
             }
-            .padding()
+            .padding(12)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity)
+    }
+
+    @ViewBuilder
+    private var mainBody: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            if result.inputWasTruncated, let note = result.truncationNote {
+                Text(note)
+                    .font(.callout)
+                    .foregroundStyle(.primary)
+                    .padding(10)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(.yellow.opacity(0.25), in: RoundedRectangle(cornerRadius: 8))
+            }
+
+            textPanel
+
+            if showReportCard {
+                reportPanel
+            } else if isUnparsed && !showFullReport {
+                Text("The model did not return valid JSON. Turn on “Show full report” in Settings to inspect the raw response.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .padding(.vertical, 2)
+            }
+        }
     }
 
     private var textPanel: some View {
@@ -174,17 +193,17 @@ struct ResultsSheet: View {
     }
 
     private func panelChrome(title: String, subtitle: String, @ViewBuilder content: () -> some View) -> some View {
-        VStack(alignment: .leading, spacing: 14) {
-            VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(.title3.weight(.semibold))
+                    .font(.headline.weight(.semibold))
                 Text(subtitle)
-                    .font(.caption)
+                    .font(.caption2)
                     .foregroundStyle(.secondary)
             }
             content()
         }
-        .padding(18)
+        .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 12, style: .continuous)

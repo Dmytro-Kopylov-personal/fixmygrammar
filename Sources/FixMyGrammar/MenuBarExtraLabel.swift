@@ -1,35 +1,24 @@
 import SwiftUI
 
-/// Menu bar icon + subtle motion while a grammar check is in flight.
+/// Menu bar icon; while a check runs, shows an inline spinner in the same slot (no separate popup).
 struct MenuBarExtraLabel: View {
     let isChecking: Bool
-    @State private var pulse = false
+    /// Keeps menu bar width stable between idle and busy so neighbors don’t shift.
+    private let slotWidth: CGFloat = 22
 
     var body: some View {
         Group {
             if isChecking {
-                HStack(spacing: 5) {
-                    ProgressView()
-                        .controlSize(.small)
-                        .scaleEffect(0.85)
-                    Image(systemName: "text.badge.checkmark")
-                        .symbolRenderingMode(.hierarchical)
-                        .opacity(pulse ? 0.45 : 1)
-                }
-                .accessibilityLabel("FixMyGrammar, checking grammar")
-                .onAppear {
-                    pulse = false
-                    withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
-                        pulse = true
-                    }
-                }
+                ProgressView()
+                    .controlSize(.small)
+                    .scaleEffect(0.92)
+                    .frame(width: slotWidth, height: slotWidth)
+                    .accessibilityLabel("FixMyGrammar, checking grammar")
             } else {
                 Image(systemName: "text.badge.checkmark")
+                    .frame(width: slotWidth, height: slotWidth)
                     .accessibilityLabel("FixMyGrammar")
             }
-        }
-        .onChange(of: isChecking) { _, new in
-            if !new { pulse = false }
         }
     }
 }

@@ -1,6 +1,14 @@
 .build/
 dist/
 .DS_Store
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+.swiftpm/xcode/
+DerivedData/
 
-# Local MCP secrets (copy from .cursor/*.example.json and use ~/.cursor/mcp.json or merge here)
+# SPM resolve (optional: commit Package.resolved for app reproducibility)
+# Package.resolved
+
+# Local MCP secrets (copy from .cursor/*.example.json)
 .cursor/mcp.json

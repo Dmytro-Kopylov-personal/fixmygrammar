@@ -72,8 +72,8 @@ struct SettingsView: View {
             }
 
             Section("Results") {
-                Toggle("Bring FixMyGrammar to the front when results or errors appear", isOn: $appModel.bringResultsToFront)
-                Text("Helpful when a check succeeds. For “no text captured” errors we no longer steal focus, so you can stay in your editor. Other errors may still bring the app forward when this is on.")
+                Toggle("Bring results overlay to the front", isOn: $appModel.bringResultsToFront)
+                Text("When on, successful checks activate the app so the results window appears above your work. Errors that need your attention use a separate alert. “No text captured” stays silent so focus stays in your editor.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Toggle("Show full report (issues list, raw output, copy full report)", isOn: $appModel.showFullReportInResults)
@@ -106,8 +106,15 @@ struct SettingsView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
             }
+
+            Section("About") {
+                LabeledContent("Version", value: AppMetadata.marketingVersion)
+                Text("Open source under the MIT License. Source and releases: see the project README.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
         .formStyle(.grouped)
-        .frame(width: 500, height: 720)
+        .frame(width: 500, height: 780)
     }
 }
