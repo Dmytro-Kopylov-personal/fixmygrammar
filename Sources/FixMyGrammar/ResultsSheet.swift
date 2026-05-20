@@ -19,16 +19,6 @@ struct ResultsSheet: View {
         showFullReport && (hasIssues || isUnparsed)
     }
 
-    /// When content is long, the scroll region stops here so the card stays compact; short text doesn’t get a big empty area.
-    private var maxScrollableBodyHeight: CGFloat {
-        min(320, (NSScreen.main?.visibleFrame.height ?? 800) * 0.42)
-    }
-
-    /// Finishes the vertical size proposal so `ViewThatFits` can fall back to scrolling instead of a tall stack.
-    private var maxMiddleSectionHeight: CGFloat {
-        min(420, (NSScreen.main?.visibleFrame.height ?? 800) * 0.55)
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
@@ -42,16 +32,13 @@ struct ResultsSheet: View {
 
             Divider()
 
-            ViewThatFits(in: .vertical) {
+            // One scroll region that grows with the window — drag any edge/corner to resize.
+            ScrollView {
                 mainBody
                     .padding(12)
-                ScrollView {
-                    mainBody
-                        .padding(12)
-                }
-                .frame(maxHeight: maxScrollableBodyHeight)
             }
-            .frame(maxWidth: .infinity, maxHeight: maxMiddleSectionHeight, alignment: .top)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .scrollBounceBehavior(.basedOnSize, axes: .vertical)
 
             Divider()
 
@@ -90,7 +77,7 @@ struct ResultsSheet: View {
             }
             .padding(12)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
     @ViewBuilder

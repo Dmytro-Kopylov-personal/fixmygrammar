@@ -1,7 +1,7 @@
 import AppKit
 import SwiftUI
 
-/// Full-screen, Spotlight-style host for results (borderless, floating above other app windows in this process).
+/// Resizable floating panel for results (frame saved via `setFrameAutosaveName`).
 @MainActor
 final class ResultsOverlayController {
     static let shared = ResultsOverlayController()
@@ -16,8 +16,7 @@ final class ResultsOverlayController {
     func show(result: GrammarRunResult, appModel: AppModel) {
         lastModel = appModel
         if window == nil {
-            let w = makeWindow()
-            window = w
+            window = makeWindow()
         }
         guard let w = window else { return }
 
@@ -53,18 +52,24 @@ final class ResultsOverlayController {
         guard let screen = NSApp.keyWindow?.screen ?? NSScreen.main else {
             return NSWindow()
         }
-        let frame = screen.frame
+        let vf = screen.visibleFrame
+        let defaultW: CGFloat = 480
+        let defaultH: CGFloat = 580
+        let x = vf.minX + (vf.width - defaultW) / 2
+        let y = vf.minY + (vf.height - defaultH) / 2
+        let rect = NSRect(x: x, y: y, width: defaultW, height: defaultH)
+
         let w = NSWindow(
-            contentRect: frame,
-            styleMask: [.borderless, .fullSizeContentView],
+            contentRect: rect,
+            styleMask: [.borderless, .resizable, .fullSizeContentView],
             backing: .buffered,
             defer: false
         )
         w.isOpaque = false
         w.backgroundColor = .clear
-        w.hasShadow = false
-        w.isMovable = false
-        w.isMovableByWindowBackground = false
+        w.hasShadow = true
+        w.isMovable = true
+        w.isMovableByWindowBackground = true
         w.titleVisibility = .hidden
         w.titlebarAppearsTransparent = true
         w.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
@@ -72,7 +77,11 @@ final class ResultsOverlayController {
         w.isReleasedWhenClosed = false
         w.ignoresMouseEvents = false
         w.hidesOnDeactivate = false
-        w.setFrame(frame, display: false)
+        w.minSize = NSSize(width: 320, height: 380)
+        w.maxSize = NSSize(width: vf.width * 0.95, height: vf.height * 0.95)
+        // Persists position & size across launches.
+        w.setFrameAutosaveName("FixMyGrammarResultsPanel")
+        w.setFrame(rect, display: false)
         return w
     }
 
@@ -80,7 +89,6 @@ final class ResultsOverlayController {
         if escapeMonitor != nil { return }
         escapeMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self, let w = self.window, w.isVisible, event.keyCode == 53 else { return event }
-            // Escape: mirror scrim / Done
             if let m = self.lastModel {
                 m.activeResult = nil
             }

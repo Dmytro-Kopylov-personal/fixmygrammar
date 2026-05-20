@@ -18,7 +18,7 @@ There is **no Dock icon**; the app runs like a lightweight utility next to the c
 - **Global shortcut** (customizable) to run a check from any app.
 - **Clipboard-first workflow** (recommended for browsers & Slack): copy text with ⌘C, then run the shortcut or use the menu.
 - **Accessibility selection** (optional): works in some native apps; grant **Privacy → Accessibility** for a stable app bundle (`FixMyGrammar.app`).
-- **Results overlay**: original vs. corrected text, optional issues list, copy buttons.
+- **Results overlay**: original vs. corrected text, optional issues list, copy buttons — **resize the window** by dragging an edge or corner (size is remembered).
 - **Local-first**: network calls only go to your LM Studio base URL; no bundled telemetry.
 
 ---
