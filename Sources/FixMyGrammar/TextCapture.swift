@@ -48,8 +48,8 @@ enum TextCapture {
 
     /// Plain text and, if missing, a specific reason (Accessibility, empty clipboard, unsupported host app, etc.).
     static func captureWithDiagnostics(order: TextCaptureOrder) -> (text: String?, diagnostics: String?) {
-        let clip = clipboardPlainText()
-        let sel = selectionPlainText()
+        let clip = order.usesClipboard ? clipboardPlainText() : nil
+        let sel = order.usesSelection ? selectionPlainText() : nil
 
         let text: String?
         switch order {
@@ -96,9 +96,8 @@ enum TextCapture {
     }
 
     /// Selected text from the focused accessibility element and a short walk up ancestors (many hosts expose selection on a parent).
+    /// Does not show a system Accessibility prompt; use `promptAccessibilityIfNeeded()` from Settings or when the user explicitly requests access.
     private static func selectionPlainText() -> String? {
-        promptAccessibilityIfNeeded()
-
         guard AXIsProcessTrusted() else {
             return nil
         }
@@ -217,9 +216,10 @@ enum TextCapture {
         return parts.joined(separator: "\n\n")
     }
 
+    /// Call from Settings / menu only. Shows the system prompt when not yet trusted (do not call from the capture hot path).
     static func promptAccessibilityIfNeeded() {
         let promptKey = kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String
         let options: NSDictionary = [promptKey: true]
-        AXIsProcessTrustedWithOptions(options)
+        _ = AXIsProcessTrustedWithOptions(options)
     }
 }

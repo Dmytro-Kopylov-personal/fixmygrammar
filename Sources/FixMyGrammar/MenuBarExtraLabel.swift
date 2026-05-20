@@ -1,24 +1,44 @@
+import AppKit
 import SwiftUI
 
-/// Menu bar icon; while a check runs, shows an inline spinner in the same slot (no separate popup).
+/// Menu bar item: SF Symbol when idle, AppKit spinner when checking (SwiftUI `ProgressView` often draws blank here).
 struct MenuBarExtraLabel: View {
     let isChecking: Bool
-    /// Keeps menu bar width stable between idle and busy so neighbors don’t shift.
-    private let slotWidth: CGFloat = 22
 
     var body: some View {
         Group {
             if isChecking {
-                ProgressView()
-                    .controlSize(.small)
-                    .scaleEffect(0.92)
-                    .frame(width: slotWidth, height: slotWidth)
+                MenuBarSpinningIndicator()
+                    .frame(width: 18, height: 18)
                     .accessibilityLabel("FixMyGrammar, checking grammar")
             } else {
                 Image(systemName: "text.badge.checkmark")
-                    .frame(width: slotWidth, height: slotWidth)
+                    .font(.system(size: 13, weight: .medium))
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(.primary)
                     .accessibilityLabel("FixMyGrammar")
             }
         }
+    }
+}
+
+private struct MenuBarSpinningIndicator: NSViewRepresentable {
+    func makeNSView(context: Context) -> NSProgressIndicator {
+        let indicator = NSProgressIndicator()
+        indicator.style = .spinning
+        indicator.controlSize = .small
+        indicator.isIndeterminate = true
+        indicator.isDisplayedWhenStopped = false
+        indicator.appearance = NSAppearance.currentDrawing()
+        return indicator
+    }
+
+    func updateNSView(_ indicator: NSProgressIndicator, context: Context) {
+        indicator.appearance = NSAppearance.currentDrawing()
+        indicator.startAnimation(nil)
+    }
+
+    static func dismantleNSView(_ indicator: NSProgressIndicator, coordinator: ()) {
+        indicator.stopAnimation(nil)
     }
 }
